@@ -3,47 +3,79 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Planets & moons of the Solar System</title>
+    <title>Planets, dwarf planets & moons of the Solar System</title>
+    <link href="https://fonts.googleapis.com/css?family=Rajdhani" rel="stylesheet">
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
     <style>
+
+      body, #chart {
+	  background: rgb(20, 20, 20);
+      }
+
+      .label, h1 {
+	  font-family: Rajdhani;
+	  fill: #fff;
+      }
+
+      .label {
+	  font-size: 12px;
+      }
+
+      h1 {
+	  font-size: 36px;
+	  text-align: center;
+	  width: 100%;
+	  color: #fff;
+	  margin-top: calc(2 * 36px);
+      }
+      
     </style>
 
 </head>
 
 <body>
 
+  <h1>The planets, dwarf planets & moons<br>of the Solar System</h1>
+  
 <svg id="chart"></svg>
 
 <script>
   d3.json('planets.json')
     .then((data) => { showChart(data.planets) });
-  const width = 600;
-  const barHeight = 30;
+  const height = 600;
+  const columnWidth = 95;
+  const scale = 00;
   
   function showChart(planets) {
       const scale = d3.scaleLinear()
-	    .domain([0, d3.max(planets.reduce((acc, curr) => {
-		acc.push(curr.moons.length);
-		return acc;
-	    }, []))])
-	    .range([0, width]);
+      	    .domain([0, d3.max(planets.reduce((acc, curr) => {
+      		acc.push(curr.moons.length);
+      		return acc;
+      	    }, []))])
+      	    .range([0, 0.05]);
+      
+      const fillColors = i => {
+	  return `rgb(${Array(3).fill(150 + i * 40).join(', ')})`;
+      };
       
       const chart = d3.select('#chart')
-	    .attr('width', width)
-	    .attr('height', planets.length * barHeight);
-      const bar = chart.selectAll('g')
+	    .attr('width', planets.length * columnWidth)
+	    .attr('height', height);
+      const planet = chart.selectAll('g')
 	    .data(planets)
 	    .enter().append('g')
-	    .attr('transform', (d, i) => `translate(0, ${i * barHeight})`);
-      bar.append('rect')
-	  .attr('width', _ => scale(_.moons.length))
-	  .attr('height', barHeight - 1)
-	  .attr('fill', '#8af');
-      bar.append('text')
-	  .attr('x', 5)
-	  .attr('y', barHeight / 2)
+	    .attr('transform', (_, i) => `translate(${i * columnWidth + 40}, 320)`);
+      planet.append('circle')
+	  .attr('cx', 15)
+	  .attr('cy', -160)
+	  .attr('r', _ => scale(_.diameter))
+	  .style('fill', (_, i) => fillColors(i % 3));
+      planet.append('text')
+	  .attr('class', 'label')
+	  .attr('y', -20)
+	  .attr('x', 0)
 	  .attr('dy', '.35em')
-	  .text(_ => `${_.name}: ${_.moons.length}`);
+	  .text(_ => _.name);
   }
 </script>
 
