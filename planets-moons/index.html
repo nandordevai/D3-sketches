@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>Planets, dwarf planets & moons of the Solar System</title>
     <link href="https://fonts.googleapis.com/css?family=Rajdhani" rel="stylesheet">
@@ -9,85 +9,47 @@
     <style>
 
       body, #chart {
-	  background: rgb(20, 20, 20);
+          background: rgb(20, 20, 20);
       }
 
       .label, h1 {
-	  font-family: Rajdhani;
-	  fill: #fff;
+          font-family: Rajdhani;
+          fill: #fff;
       }
 
       .label {
-	  font-size: 12px;
-	  text-anchor: middle;
+          font-size: 12px;
+          text-anchor: middle;
+      }
+
+      .left {
+          text-anchor: start;
+      }
+
+      .right {
+          text-anchor: end;
       }
 
       h1 {
-	  font-size: 36px;
-	  text-align: center;
-	  width: 100%;
-	  color: #fff;
-	  margin-top: calc(2 * 36px);
+          font-size: 36px;
+          text-align: center;
+          width: 100%;
+          color: #fff;
+          margin-top: calc(2 * 36px);
       }
       
     </style>
 
-</head>
+  </head>
 
-<body>
+  <body>
 
-  <h1>The planets, dwarf planets & moons<br>of the Solar System</h1>
-  
-<svg id="chart"></svg>
-
-<script>
-const height = 1800;
-const columnWidth = 100;
-
-d3.json('planets.json')
-    .then((data) => { showChart(data.planets) });
-
-function grey(value) {
-    return `rgb(${Array(3).fill(value).join(',')})`;
-}
-
-function showChart(planets) {
-    const fillColors = i => {
-	return `rgb(${Array(3).fill(150 + i * 40).join(', ')})`;
-    };
+    <h1>The planets, dwarf planets & moons<br>of the Solar System</h1>
     
-    const maxRadius = d3.max(planets.reduce((acc, curr) => {
-      	acc.push(curr.diameter / 2);
-      	return acc;
-    }, []));
-    const scale = d3.scaleLinear()
-      	  .domain([0, maxRadius])
-      	  .range([0, 110]);
-    const chart = d3.select('#chart')
-	  .attr('width', planets.length * columnWidth)
-	  .attr('height', height);
-    const planet = chart.selectAll('g')
-	  .data(planets)
-	  .enter().append('g')
-	  .attr('class', 'planet')
-	  .attr('transform', (_, i) => `translate(${i * columnWidth + 40}, 320)`);
-    planet.append('circle')
-	.attr('cy', _ => scale(maxRadius) - scale(_.diameter / 2) - 160)
-	.attr('r', _ => scale(_.diameter / 2))
-	.style('fill', (_, i) => fillColors(i % 3));
-    planet.append('text')
-	.attr('class', 'label')
-	.attr('y', -20)
-	.text(_ => _.name);
-    planet.selectAll('g')
-      	.data(_ => _.moons)
-      	.enter().append('circle')
-	.attr('cy', (_, i) => i * 10)
-	.attr('r', (_, i) =>  (i % 10 === 0 && i > 0) ? 2 : 1)
-	.style('fill', grey(200));
-}
-</script>
+    <svg id="chart"></svg>
 
-</body>
+    <script src="/draw.js"></script>
+
+  </body>
 
 </html>
