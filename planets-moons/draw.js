@@ -25,13 +25,8 @@ function hideLabels(i) {
 }
 
 function showChart(planets) {
-    const fillColors = i => {
-        return `rgb(${Array(3).fill(150 + i * 40).join(', ')})`;
-    };
-    const maxRadius = d3.max(planets.reduce((acc, curr) => {
-        acc.push(curr.diameter / 2);
-        return acc;
-    }, []));
+    const fillColors = i => grey(150 + i * 40);
+    const maxRadius = d3.max(planets, (_) => _.diameter / 2);
     const scale = d3.scaleLinear()
         .domain([0, maxRadius])
         .range([0, 110]);
