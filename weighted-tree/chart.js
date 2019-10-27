@@ -3,6 +3,7 @@ import { data } from './data.js';
 const root = d3.hierarchy(data);
 const treeLayout = d3.tree();
 treeLayout.size([600, 600]);
+console.log(root);
 treeLayout(root);
 
 function nodeSize(d) {

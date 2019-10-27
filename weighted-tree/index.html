@@ -5,7 +5,7 @@
 </head>
 <style>
   body {
-    padding: 50px 100px;
+    /* padding: 50px 100px; */
   }
 
   svg {
@@ -23,6 +23,22 @@
     stroke: #ccc;
     stroke-linecap: round;
   }
+
+  .leaf {
+    fill: red;
+    stroke: black;
+  }
+
+  text.title {
+    text-anchor: start;
+  }
+
+  text {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    dominant-baseline: middle;
+    text-anchor: end;
+  }
 </style>
 <body>
   <svg>
@@ -32,6 +48,6 @@
     </g>
   </svg>
   <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
-  <script type="module" src="chart.js"></script>
+  <script type="module" src="chart-imdb.js"></script>
 </body>
 </html>
