@@ -32,7 +32,9 @@ function update(source) {
     const nodes = d3.select('svg g.nodes')
           .selectAll('g.node')
           .data(root.descendants(), d => d.data.rank);
-    const node = nodes.enter().append('g').classed('node', true);
+    const node = nodes.enter().append('g')
+          .classed('node', true);
+    nodes.exit().remove();
 
     node.append('circle')
         .attr('transform', `translate(${xOffset}, ${yOffset})`)
@@ -53,6 +55,11 @@ function update(source) {
         })
         .attr('y', d => d.x)
         .classed('leaf', d => typeof d.children === 'undefined');
+
+    root.descendants().forEach((d) => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+    });
 
     // Links
     const link = d3.linkHorizontal()
