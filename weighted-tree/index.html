@@ -4,22 +4,17 @@
   <title>Tree layout</title>
 </head>
 <style>
-  body {
-    /* padding: 50px 100px; */
-  }
-
   svg {
-    width: 100vw;
-    height: 100vh;
+      width: 100vw;
+      height: 100vh;
   }
 
-  .node {
-    stroke: none;
+  .root {
+      transform: translate(200px, 20px);
   }
 
   .link {
-    fill: none;
-    stroke-linecap: round;
+      fill: none;
   }
 
   .leaf {
@@ -27,19 +22,19 @@
   }
 
   text.title {
-    text-anchor: start;
+      text-anchor: start;
   }
 
   text {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    dominant-baseline: middle;
-    text-anchor: end;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      dominant-baseline: middle;
+      text-anchor: end;
   }
 </style>
 <body>
   <svg>
-    <g transform="translate(5, 5)">
+    <g class="root">
       <g class="links"></g>
       <g class="nodes"></g>
     </g>
