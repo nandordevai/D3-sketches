@@ -50,24 +50,24 @@ function draw(root) {
   movies.append('circle')
     .classed('node', true)
     .classed('leaf', d => d.data.metascore)
-    .attr('cx', d => d.y + 10)
-    .attr('cy', d => d.x + 10)
+    .attr('cx', d => d.y)
+    .attr('cy', d => d.x)
     .attr('r', d => `${nodeSize(d)}px`);
 
   movies.append('text')
     .text(d => d.data.title_eng || d.data.key)
-    .attr('x', d => d.data.title_eng ? d.y + 40 : d.y - 10)
-    .attr('y', d => d.x + 10)
+    .attr('x', d => d.data.title_eng ? d.y + 30 : d.y - 20)
+    .attr('y', d => d.x)
     .classed('title', d => d.data.title_eng)
 
   // Links
   const link = d3.linkHorizontal()
-    .x(d => d.y + 10)
-    .y(d => d.x + 10);
+    .x(d => d.y)
+    .y(d => d.x);
 
   const grossScale = d3.scaleLinear([0, maxGrossUSD], [1, 30]);
 
-  const linkColors = d3.scaleOrdinal([0, 10], ['#ccc', '#aaa', '#888']);
+  const linkColors = d3.scaleOrdinal([], ['#ccc', '#aaa', '#888']);
 
   d3.select('svg g.links')
     .selectAll('path.link')
@@ -76,12 +76,8 @@ function draw(root) {
       (enter) => enter
         .append('path')
         .classed('link', true)
-        .attr('x1', d => d.source.y)
-        .attr('y1', d => d.source.x)
-        .attr('x2', d => d.target.y)
-        .attr('y2', d => d.target.x)
         .attr('d', link)
-        .attr('stroke-width', d => `${d.target.data.gross_usd ? grossScale(d.target.data.gross_usd) : 1}px`)
+        .attr('stroke-width', d => `${grossScale(d.target.data.gross_usd)}px`)
         .attr('stroke', (d, i) => linkColors(i))
     );
 }
