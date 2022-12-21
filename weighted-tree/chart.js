@@ -33,15 +33,15 @@ function getTextX(d) {
 
 update();
 
-function update(source) {
+function update() {
     // Nodes
     const nodes = d3.select('svg g.nodes')
-          .selectAll('g.node')
-          .data(root.descendants(), d => d.data.rank);
-    
+        .selectAll('g.node')
+        .data(root.descendants(), d => d.data.rank);
+
     const node = nodes.enter().append('g')
-          .classed('node', true)
-          .attr('transform', `translate(${xOffset}, ${yOffset})`);
+        .classed('node', true)
+        .attr('transform', `translate(${xOffset}, ${yOffset})`);
     nodes.exit().remove();
 
     node.append('circle')
@@ -59,8 +59,8 @@ function update(source) {
 
     // Links
     const link = d3.linkHorizontal()
-          .x(d => d.y)
-          .y(d => d.x);
+        .x(d => d.y)
+        .y(d => d.x);
 
     d3.select('svg g.links')
         .selectAll('path.link')
@@ -78,7 +78,7 @@ function update(source) {
                 .attr('stroke', d => d.target.data.color || defaultColor)
                 .attr('opacity', 0.4)
                 .attr('stroke-width', d => `${nodeScale(d.target.data.value)}px`),
-            update => {},
+            update => { },
             exit => exit.remove()
         );
 }
