@@ -1,62 +1,97 @@
-const zip = (left, right) => left.reduce((acc, curr, i) => {
-    acc.push(curr, right[i]);
-    return acc;
-}, []);
-const chartWidth = 500;
-const chartHeight = 300;
-const barPadding = 1;
-const rand = (length) => [...Array(length).keys()].map(_ => Math.random() * 100);
-const data1 = rand(5);
-// const data2 = rand(5);
-const data2 = [1, 10, 50, 75, 100];
-const data = zip(data1, data2);
-const barWidth = chartWidth / data.length - (barPadding * 2);
+const config = {
+    chartWidth: 500,
+    chartHeight: 300,
+    barPadding: 1,
+};
 
-const yScale = d3.scaleLinear()
-      .domain([0, 100])
-      .range([chartHeight, 0]);
+const data = Array.from({ length: 10 }, () => Math.random() * 100);
 
-const yAxis = d3.axisLeft()
-      // .tickSize(chartWidth)
-      .scale(yScale);
+const BarChart = {
+    init() {
+        this.barWidth = this.chartWidth / this.data.length - this.barPadding * 2;
+        this.xScale = d3.scaleOrdinal().domain([0, this.data.length]).range([0, this.chartWidth]);
+        this.yScale = d3.scaleLinear().domain([0, 100]).range([this.chartHeight, 0]);
+        this.yAxis = d3.axisLeft().scale(this.yScale);
+        this.xAxis = d3.axisBottom().scale(this.xScale);
+        this.chart = d3.select('#chart');
+        this.chart
+            .attr('width', this.chartWidth)
+            .attr('height', this.chartHeight)
+            .classed('chart', true);
+        return this;
+    },
 
-const xScale = d3.scaleOrdinal()
-      .domain([0, data.length])
-      .range([0, chartWidth]);
+    draw() {
+        this.chart
+            .selectAll('rect')
+            .data(this.data)
+            .enter()
+            .append('rect')
+            .classed('bar-odd', (_, i) => !(i % 2))
+            .classed('bar-even', (_, i) => i % 2)
+            .attr('width', this.barWidth)
+            .attr('opacity', .5)
+            .attr('x', (_, i) => i * (this.barWidth + this.barPadding * 2))
+            .attr('y', d => this.yScale(d))
+            .attr('height', _ => this.chartHeight - this.yScale(_));
 
-const xAxis = d3.axisBottom()
-      .scale(xScale);
+        this.chart
+            .selectAll('text')
+            .data(this.data)
+            .enter()
+            .append('text')
+            .text(d => d3.format('.1f')(d))
+            .attr('x', (_, i) => (i + 0.5) * (this.barWidth + this.barPadding * 2))
+            .attr('text-anchor', 'middle')
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', 10)
+            .attr('y', d => this.yScale(d) - 10);
 
-const chart = d3.select('#chart')
-      .attr('width', chartWidth)
-      .attr('height', chartHeight)
-      .classed('chart', true);
+        this.chart
+            .append('g')
+            .call(this.xAxis)
+            .attr('transform', `translate(0, ${this.chartHeight})`);
 
-chart.selectAll('rect')
-    .data(data)
-    .enter()
-    .append('rect')
-    .classed('bar-odd', (_, i) => !(i % 2))
-    .classed('bar-even', (_, i) => i % 2)
-    .attr('width', barWidth)
-    .attr('height', _ => chartHeight - yScale(_))
-    .attr('x', (_, i) => i * (barWidth + (barPadding * 2)))
-    .attr('y', d => yScale(d));
+        this.chart.append('g').call(this.yAxis);
+        return this;
+    },
+};
 
-chart.selectAll('text')
-    .data(data)
-    .enter()
-    .append('text')
-    .text(d => d3.format('.1f')(d))
-    .attr('x', (_, i) => (i + 0.5) * (barWidth + (barPadding * 2)))
-    .attr('text-anchor', 'middle')
-    .attr('font-family', 'sans-serif')
-    .attr('font-size', 10)
-    .attr('y', d => yScale(d) - 10);
+const AnimatedBarChart = {
+    animate() {
+        this.chart
+            .selectAll('rect')
+            .attr('y', this.chartHeight)
+            .attr('height', 0)
+            .transition()
+            .delay((d, i) => i * 50)
+            .attr('y', d => this.yScale(d))
+            .attr('height', _ => this.chartHeight - this.yScale(_));
+        return this;
+    }
+}
 
-chart.append('g')
-    .call(xAxis)
-    .attr('transform', `translate(0, ${chartHeight})`);
+const InteractiveBarChart = {
+    interactive() {
+        this.chart
+            .selectAll('rect')
+            .on('mouseover', () => {
+                d3.select(d3.event.currentTarget)
+                    .transition()
+                    .attr('opacity', 1);
+            })
+            .on('mouseout', () => {
+                this.chart
+                    .selectAll('rect')
+                    .transition()
+                    .attr('opacity', .5);
+            });
+        return this;
+    },
+};
 
-chart.append('g')
-    .call(yAxis);
+const chart = Object.assign({}, { ...config }, { data }, BarChart, AnimatedBarChart, InteractiveBarChart);
+chart.init().draw().animate().interactive();
+
+// const chart = Object.assign({}, { ...config }, { data }, BarChart, InteractiveBarChart);
+// chart.init().draw().interactive();
