@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        #content .map path {
+            fill: #aaa;
+            stroke: #fff;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <div id="content">
+        <svg width="620px" height="600px">
+            <g class="map"></g>
+        </svg>
+    </div>
+    <script>
+        let projection = d3.geoMercator()
+            .scale(8000)
+            .translate([450, 200])
+            .center([19.0402, 47.4979]);
+
+        let geoGenerator = d3.geoPath()
+            .projection(projection);
+
+        function update(data) {
+            d3.select('#content g.map')
+                .selectAll('path')
+                .data(data.features)
+                .enter()
+                .append('path')
+                .attr('d', geoGenerator);
+        }
+
+        // d3.json('africa.json').then(update);
+        d3.json('hexmap.json').then(update);
+    </script>
+</body>
+
+</html>
